@@ -1,47 +1,69 @@
 <?php
-
 $dbConnection;
-$requestURI = $_SERVER['REQUEST_URI'];
-if(strpos('?', $requestURI)){
-	$requestURI=explode('?', $requestURI, 2);
-	$requestPath=$requestURI[0];
-	if(preg_match('/^[a-zA-Z0-9_-]{1,20}$/', $requestPath)===0){
-		header('Location: http://sheac.me/errors/malformed-query');
+class item{
+	public function __construct(){
+		$this->$pendingCommits=array();
 	}
-	$queryString=explode('&', $requestURI[1]);
-	$supportedActions=array('view');
-	if(in_array($queryString[0], $supportedActions)){
-		require_once('actions/'.$queryString[0].'.php');
-		$action=$queryString[0];
-	}else{
-		require_once('actions/view.php');
-		$action='view';
+	public function init($properties){
+		foreach($properties as $name=>$value){
+			$this->$$name=$value;
+		}
 	}
-}else{
-	$requestPath=$requestURI;
-	if(preg_match('/^[a-zA-Z0-9_\/-]{0,20}$/', $requestURI)===0){
-		header('Location: http://sheac.me/errors/malformed-query');
-	}
-	require_once('actions/view.php');
-	$action='view';
-}
+	public function pull(){
 
-function dbQuery($query, $maxCacheAge){
-	if(file_exists('cache/dbQueries/'.$query) && ( (time()-filemtime('cache/dbQueries/'.$query)) < $maxCacheAge)){
-		return unserialize(file_get_contents('cache/dbQueries/'.$query));
-	}else{
+	}
+	public function push(){
+		
+	}
+	public function getProperty($property){
+		if(isset($this->$$property)){
+			if(!empty($this->$pendingCommits[$property])){
+				return $pendingCommits[$property];
+			}else{
+				return $this->$$property;
+			}
+		}else{
+			pull();
+			return $this->$$property;
+		}
+	}
+	public function setProperty(){
+
+	}
+	/*
+	public function init($type, $property, $value){
+		$this->$type=$type;
+		$this->$properties=$value;
 		global $dbConnection;
 		if(!isset($dbConnection)){
-			$dbConnection=mysql_connect("localhost","sheacme",$password);
-			mysql_select_db("sheacme_neocodephp", $dbConnection);
+			$dbConnecton=mysql_connect('localhost', 'sheacme', 'Sac193tbmfigna1506964');
+			mysql_select_db('sheacme_database');
 		}
-		if(!$dbConnection){
-			header('Location: http://sheac.me/errors/database');
+		$this->$propertiesCurrent=true;
+		$result=mysql_query("SELECT * FROM $type WHERE $property='$value'");
+		if(mysql_num_rows($result)>0){
+			$this->$properties=mysql_fetch_array($result);
+		}else{
+			$this->
 		}
-		$result=mysql_query($query);
-		file_put_contents('cache/dbQueries/'.$query, serialize($result));
-		return $result;
+		
 	}
+	public function getProperty($property){
+		if(!$this->$propertiesCurrent){
+			global $dbConnection;
+			if(!isset($dbConnection)){
+				$dbConnecton=mysql_connect('localhost', 'sheacme', 'Sac193tbmfigna1506964');
+				mysql_select_db('sheacme_database');
+			}
+			$this->$propertiesCurrent=true;
+			$this->$properties=mysql_fetch_array(mysql_query("SELECT * FROM $type WHERE $property='$value'"));
+		}
+		return $this->$properties[$property];
+	}
+	public function setProperty($property, $value){
+		
+	}
+	*/
 }
 
 ?>
