@@ -8,7 +8,7 @@ spl_autoload_register(function($class){
 
 class object{
 	public function exists(){
-		global $dbCon;if(empty($dbCon)){$dbCon=mysql_connect('localhost', 'sheacme', 'Sac193tbmfigna1506964');mysql_select_db('sheacme_database');}
+		global $dbCon;if(empty($dbCon)){$dbCon=mysql_connect('localhost', 'sheacme', 'xx');mysql_select_db('sheacme_database');}
 		echo "SELECT * FROM ".$this->type." WHERE id='".$this->id."'";
 		$result=mysql_query("SELECT * FROM ".$this->type." WHERE id='".$this->id."'");
 		if(mysql_num_rows($result)>0){
@@ -18,7 +18,7 @@ class object{
 		}
 	}
 	public function pull(){
-		global $dbCon;if(empty($dbCon)){$dbCon=mysql_connect('localhost', 'sheacme', 'Sac193tbmfigna1506964');mysql_select_db('sheacme_database');}
+		global $dbCon;if(empty($dbCon)){$dbCon=mysql_connect('localhost', 'sheacme', 'xx');mysql_select_db('sheacme_database');}
 		$result=mysql_fetch_row(mysql_query("SELECT * FROM ".$this->type." WHERE id='".$this->id."'"));
 		foreach($result as $property=>$value){
 			$this->$property=$value;
@@ -28,7 +28,7 @@ class object{
 		}
 	}
 	public function push(){
-		global $dbCon;if(empty($dbCon)){$dbCon=mysql_connect('localhost', 'sheacme', 'Sac193tbmfigna1506964');mysql_select_db('sheacme_database');}
+		global $dbCon;if(empty($dbCon)){$dbCon=mysql_connect('localhost', 'sheacme', 'xx');mysql_select_db('sheacme_database');}
 		$query='UPDATE '.$this->type.' SET';
 		if(!empty($this->pending)){
 			foreach($this->pending as $property=>$value){
