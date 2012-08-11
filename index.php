@@ -1,69 +1,55 @@
 <?php
-$dbConnection;
-class item{
-	public function __construct(){
-		$this->$pendingCommits=array();
-	}
-	public function init($properties){
-		foreach($properties as $name=>$value){
-			$this->$$name=$value;
+
+$dbCon;
+
+spl_autoload_register(function($class){
+    require_once('includes/' . $class . '.class.php');
+});
+
+class object{
+	public function exists(){
+		global $dbCon;if(empty($dbCon)){$dbCon=mysql_connect('localhost', 'sheacme', 'Sac193tbmfigna1506964');mysql_select_db('sheacme_database');}
+		echo "SELECT * FROM ".$this->type." WHERE id='".$this->id."'";
+		$result=mysql_query("SELECT * FROM ".$this->type." WHERE id='".$this->id."'");
+		if(mysql_num_rows($result)>0){
+			return true;
+		}else{
+			return false;
 		}
 	}
 	public function pull(){
-
+		global $dbCon;if(empty($dbCon)){$dbCon=mysql_connect('localhost', 'sheacme', 'Sac193tbmfigna1506964');mysql_select_db('sheacme_database');}
+		$result=mysql_fetch_row(mysql_query("SELECT * FROM ".$this->type." WHERE id='".$this->id."'"));
+		foreach($result as $property=>$value){
+			$this->$property=$value;
+		}
+		foreach($this->pending as $property=>$value){
+			$this->$property=$value;
+		}
 	}
 	public function push(){
-		
-	}
-	public function getProperty($property){
-		if(isset($this->$$property)){
-			if(!empty($this->$pendingCommits[$property])){
-				return $pendingCommits[$property];
-			}else{
-				return $this->$$property;
+		global $dbCon;if(empty($dbCon)){$dbCon=mysql_connect('localhost', 'sheacme', 'Sac193tbmfigna1506964');mysql_select_db('sheacme_database');}
+		$query='UPDATE '.$this->type.' SET';
+		if(!empty($this->pending)){
+			foreach($this->pending as $property=>$value){
+				$query.=" $property='$value'";
 			}
-		}else{
-			pull();
-			return $this->$$property;
 		}
+		$query.=" WHERE id='".$this->id."'";
+		mysql_query($query);
 	}
-	public function setProperty(){
-
-	}
-	/*
-	public function init($type, $property, $value){
-		$this->$type=$type;
-		$this->$properties=$value;
-		global $dbConnection;
-		if(!isset($dbConnection)){
-			$dbConnecton=mysql_connect('localhost', 'sheacme', 'Sac193tbmfigna1506964');
-			mysql_select_db('sheacme_database');
-		}
-		$this->$propertiesCurrent=true;
-		$result=mysql_query("SELECT * FROM $type WHERE $property='$value'");
-		if(mysql_num_rows($result)>0){
-			$this->$properties=mysql_fetch_array($result);
-		}else{
-			$this->
-		}
-		
-	}
-	public function getProperty($property){
-		if(!$this->$propertiesCurrent){
-			global $dbConnection;
-			if(!isset($dbConnection)){
-				$dbConnecton=mysql_connect('localhost', 'sheacme', 'Sac193tbmfigna1506964');
-				mysql_select_db('sheacme_database');
-			}
-			$this->$propertiesCurrent=true;
-			$this->$properties=mysql_fetch_array(mysql_query("SELECT * FROM $type WHERE $property='$value'"));
-		}
-		return $this->$properties[$property];
-	}
-	public function setProperty($property, $value){
-		
-	}
-	*/
 }
+class user extends object{
+	public $type='user';
+
+}
+class page extends object{
+	public $type='page';
+
+}
+
+$e=new user();
+$e->id='Shea';
+echo($e->exists());
 
 ?>
